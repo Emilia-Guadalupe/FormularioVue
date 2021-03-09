@@ -1,18 +1,60 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <form @submit.prevent="procesarFormulario">
+    <Inputs :tarea="tarea" />
+  </form>
+    <ListaTareas />
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+
+import Inputs from '../components/Inputs';
+import ListaTareas from '../components/ListaTareas';
+import {mapActions} from 'vuex';
+const shortid = require('shortid')
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    Inputs,
+    ListaTareas
+  },
+  data() {
+    return {
+      tarea: {
+        id: '',
+        nombre: '',
+        categorias: [],
+        estado: '',
+        numero: 0
+      }
+    }
+  },
+  methods: {
+    ...mapActions(['setTareas']),
+    procesarFormulario() {
+      console.log(this.tarea);
+      if(this.tarea.nombre.trim() === ""){
+        console.log('Campo Vacío')
+        return
+      } 
+
+      console.log('No está vacío');      
+
+      //Generar ID
+      this.tarea.id = shortid.generate();
+
+      //Enviar los datos
+      this.setTareas(this.tarea)
+
+      //Limpiar datos
+      this.tarea = {
+        id: '',
+        nombre : '',
+        categorias : [],
+        estado: '',
+        numero : 0
+      }
+    }
   }
 }
 </script>
